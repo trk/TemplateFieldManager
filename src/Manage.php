@@ -5,20 +5,20 @@ namespace Altivebir\TemplateFieldManager;
 use ProcessWire\Wire;
 
 /**
- * Class Build
+ * Class Manage
  *
  * @author			: İskender TOTOĞLU, @ukyo (community), @trk (Github)
  * @website			: https://www.altivebir.com
  *
  * @package Altivebir\TemplateFieldManager
  */
-class Build extends Wire
+class Manage extends Wire
 {
     const MODE_NONE = 0;
 
     const MODE_CHECK = 1;
 
-    const MODE_BUILD = 2;
+    const MODE_UPDATE = 2;
 
     /**
      * @var int $mode
@@ -112,18 +112,20 @@ class Build extends Wire
     /**
      * @inheritDoc
      */
-    public function create()
+    public function run($mode = false)
     {
+        $this->mode = $mode;
+
         // first create fields
-        $this->createFields();
+        $this->runFields();
         // create templates and add fields to templates
-        $this->createTemplates();
+        $this->runTemplates();
     }
 
     /**
      * @inheritDoc
      */
-    protected function createFields()
+    protected function runFields()
     {
         foreach ($this->fields as $name => $props) {
             $rename = '';
@@ -142,7 +144,7 @@ class Build extends Wire
             // create field
             $field = new Field($name, $rename, $props);
             $field->mode = $this->mode;
-            $field->create();
+            $field->run();
 
             $this->info['field'][$name] = $field->info;
         }
@@ -151,7 +153,7 @@ class Build extends Wire
     /**
      * @inheritDoc
      */
-    protected function createTemplates()
+    protected function runTemplates()
     {
         foreach ($this->templates as $name => $props) {
             $rename = '';
@@ -179,7 +181,7 @@ class Build extends Wire
             // create template
             $template = new Template($name, $rename, $props);
             $template->mode = $this->mode;
-            $template->create();
+            $template->run();
 
             $this->info['template'][$name] = $template->info;
         }

@@ -2,14 +2,14 @@
 
 namespace ProcessWire;
 
-use Altivebir\TemplateFieldManager\Build;
+use Altivebir\TemplateFieldManager\Manage;
 
-class ProcessAltivebirBuilder extends Process
+class ProcessTemplateFieldManager extends Process
 {
     /**
-     * @var AltivebirBuilder $builder
+     * @var TemplateFieldManager $manager
      */
-    protected $builder;
+    protected $manager;
 
     /**
      * @var array $resources
@@ -23,15 +23,15 @@ class ProcessAltivebirBuilder extends Process
      */
     public static function getModuleInfo() {
         return [
-            'title' => 'Process Altivebir Builder',
+            'title' => 'Process Template & Field Manager',
             'version' => 1,
-            'summary' => __('Process module for AltivebirBuilder module.'),
+            'summary' => __('Process module for Template & Field Manager module.'),
             'href' => 'https://www.altivebir.com',
             'author' => 'İskender TOTOĞLU | @ukyo(community), @trk (Github), https://www.altivebir.com',
             'requires' => [
                 'PHP>=7.0.0',
                 'ProcessWire>=3.0.0',
-                'AltivebirBuilder'
+                'TemplateFieldManager'
             ],
             'installs' => [],
             // 'permanent' => false,
@@ -41,9 +41,9 @@ class ProcessAltivebirBuilder extends Process
             'singular' => false,
             'autoload' => false,
             'page' => [
-                'name' => 'altivebir-builder',
+                'name' => 'template-field-manager',
                 'parent' => 'setup',
-                'title' => 'Altivebir Builder'
+                'title' => 'Template & Field Manager'
             ]
         ];
     }
@@ -52,8 +52,8 @@ class ProcessAltivebirBuilder extends Process
     {
         parent::__construct();
 
-        /* @var AltivebirBuilder $builder */
-        $this->builder = $this->wire->modules->get('TemplateFieldManager');
+        /* @var TemplateFieldManager $manager */
+        $this->manager = $this->wire->modules->get('TemplateFieldManager');
 
         $this->wire('classLoader')->addNamespace('Altivebir\TemplateFieldManager', __DIR__ . '/src');
     }
@@ -91,25 +91,25 @@ class ProcessAltivebirBuilder extends Process
             $table->row(['<b>' . $this->_('Notes') . '</b><p>' . $info['notes'] . '</p>']);
         }
 
-        $build = new Build($resource);
-        $build->mode = $build::MODE_CHECK;
-        $build->create();
+        $manage = new Manage($resource);
+        $manage->mode = $manage::MODE_CHECK;
+        $manage->run();
 
-        $table->row([$this->getInfoTable($build->info)]);
+        $table->row([$this->getInfoTable($manage->info)]);
 
-        $buildButton = $this->createButton([
-            'href' => '../build/?name=' . $resource['__name'],
-            'value' => $this->_('Build'),
+        $updateButton = $this->createButton([
+            'href' => '../update/?name=' . $resource['__name'],
+            'value' => $this->_('Update'),
             'class' => 'ui-button ui-state-default',
             'icon' => 'plus'
         ]);
 
-        $table->row([$buildButton->render()]);
+        $table->row([$updateButton->render()]);
 
         return $table->render();
     }
 
-    public function ___executeBuild()
+    public function ___executeUpdate()
     {
         $resource = $this->getResourceName();
 
@@ -135,20 +135,20 @@ class ProcessAltivebirBuilder extends Process
             $table->row(['<b>' . $this->_('Notes') . '</b><p>' . $info['notes'] . '</p>']);
         }
 
-        $build = new Build($resource);
-        $build->mode = $build::MODE_BUILD;
-        $build->create();
+        $manage = new Manage($resource);
+        $manage->mode = $manage::MODE_UPDATE;
+        $manage->run();
 
-        $table->row([$this->getInfoTable($build->info)]);
+        $table->row([$this->getInfoTable($manage->info)]);
 
-        $buildButton = $this->createButton([
+        $updateButton = $this->createButton([
             'href' => '?name=' . $resource['__name'],
-            'value' => $this->_('Re-build'),
+            'value' => $this->_('Re-update'),
             'class' => 'ui-button ui-state-default',
             'icon' => 'plus'
         ]);
 
-        $table->row([$buildButton->render()]);
+        $table->row([$updateButton->render()]);
 
         return $table->render();
 
@@ -213,7 +213,7 @@ class ProcessAltivebirBuilder extends Process
     protected function getResourceInfo($resource = '')
     {
         if(is_string($resource)) {
-            $resource = $this->builder::resource($resource);
+            $resource = $this->manager::resource($resource);
         }
 
         $name = array_key_exists('name', $resource) && $resource['name'] ? $resource['name'] : $resource['__name'];
@@ -238,7 +238,7 @@ class ProcessAltivebirBuilder extends Process
     {
         $name = $this->input->get->text("name");
         if($name) {
-            $resource = $this->builder::resource($name);
+            $resource = $this->manager::resource($name);
             if(array_key_exists('__path', $resource) && $resource['__path']) {
                 $data = $resource;
             } else {
@@ -270,7 +270,7 @@ class ProcessAltivebirBuilder extends Process
             $this->_('Action')
         ]);
 
-        foreach ($this->builder::resources() as $resource) {
+        foreach ($this->manager::resources() as $resource) {
             $name = array_key_exists('name', $resource) && $resource['name'] ? $resource['name'] : $resource['__name'];
             $title = array_key_exists('title', $resource) && $resource['title'] ? $resource['title'] : $name;
             $description = array_key_exists('description', $resource) && $resource['description'] ? $resource['description'] : '';
@@ -283,14 +283,14 @@ class ProcessAltivebirBuilder extends Process
                 'icon' => 'check'
             ]);
 
-            $buildButton = $this->createButton([
-                'href' => 'build/?name=' . $resource['__name'],
-                'value' => $this->_('Build'),
+            $updateButton = $this->createButton([
+                'href' => 'update/?name=' . $resource['__name'],
+                'value' => $this->_('Update'),
                 'class' => 'ui-button ui-state-default',
                 'icon' => 'plus'
             ]);
 
-            $buttons = $checkButton->render() . $buildButton->render();
+            $buttons = $checkButton->render() . $updateButton->render();
 
             $table->row([
                 $title,

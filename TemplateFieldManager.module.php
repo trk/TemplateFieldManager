@@ -47,7 +47,7 @@ class TemplateFieldManager extends WireData implements Module
     /**
      * @inheritDoc
      *
-     * @return AltivebirCreator
+     * @return TemplateFieldManager
      */
     public static function getInstance() {
         if (self::$instance === null) {

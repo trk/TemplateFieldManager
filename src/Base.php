@@ -139,6 +139,14 @@ class Base extends Wire
     /**
      * @inheritDoc
      */
+    public function run($mode = false)
+    {
+        $this->mode = $mode;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function update()
     {
 

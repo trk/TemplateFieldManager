@@ -25,8 +25,10 @@ class Field extends Base
      *
      * @throws WireException
      */
-    public function create()
+    public function run($mode = false)
     {
+        parent::run($mode);
+
         // unset name
         if(array_key_exists('name', $this->props)) {
             unset($this->props['name']);
@@ -84,7 +86,7 @@ class Field extends Base
                 }
             }
 
-            if($this->mode == Build::MODE_BUILD) {
+            if($this->mode == Manage::MODE_UPDATE) {
                 $this->element->save();
             }
 

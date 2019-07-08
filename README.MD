@@ -78,9 +78,9 @@ return [
 $manager = wire()->modules->get('TemplateFieldManager');
 $resource = $manager::resource('components');
 
-$build = new \Altivebir\TemplateFieldManager\Build($resource);
-$build->mode = $build::MODE_BUILD;
-$build->create();
+$manage = new \Altivebir\TemplateFieldManager\Manage($resource);
+$manage->mode = $manage::MODE_UPDATE;
+$manage->create();
 
-echo '<pre>' . print_r($build->info, true) . '</pre>';
+echo '<pre>' . print_r($manage->info, true) . '</pre>';
 ```

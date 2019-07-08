@@ -54,8 +54,10 @@ class Template extends Base
      *
      * @throws WireException
      */
-    public function create()
+    public function run($mode = false)
     {
+        parent::run($mode);
+
         // unset name
         if(array_key_exists('name', $this->props)) {
             unset($this->props['name']);
@@ -71,7 +73,7 @@ class Template extends Base
             $this->info[] = "Template `{$this->name}` name changed with `{$this->rename}`.";
         }
 
-        $this->group->create();
+        $this->group->run();
         $this->element->fieldgroup = $this->group->element;
 
         $this->info['group'][$this->group->name] = $this->group->info;
@@ -92,7 +94,7 @@ class Template extends Base
             }
         }
 
-        if($this->mode == Build::MODE_BUILD) {
+        if($this->mode == Manage::MODE_UPDATE) {
             $this->element->save();
         }
     }

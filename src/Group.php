@@ -2,7 +2,7 @@
 
 namespace Altivebir\TemplateFieldManager;
 
-use Altivebir\TemplateFieldManager\Template as pwTemplate;
+use ProcessWire\Template as pwTemplate;
 use ProcessWire\WireException;
 
 /**
@@ -25,8 +25,10 @@ class Group extends Base
      *
      * @throws WireException
      */
-    public function create()
+    public function run($mode = false)
     {
+        parent::run($mode);
+
         // unset name
         if(array_key_exists('name', $this->props)) {
             unset($this->props['name']);
@@ -54,7 +56,7 @@ class Group extends Base
             $this->info[] = "`{$name}` named field added to `{$this->element->name}` named field group.";
         }
 
-        if($this->mode == Build::MODE_BUILD) {
+        if($this->mode == Manage::MODE_UPDATE) {
             $this->element->save();
         }
 
@@ -71,7 +73,7 @@ class Group extends Base
                     $field->set($property, $propertyValue);
                 }
 
-                if($this->mode == Build::MODE_BUILD) {
+                if($this->mode == Manage::MODE_UPDATE) {
                     $this->wire->fields->saveFieldgroupContext($field, $this->template->fieldgroup);
                 }
             }
