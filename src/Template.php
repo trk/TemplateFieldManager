@@ -45,7 +45,6 @@ class Template extends Base
         }
 
         $this->group = new Group($this->element->name, '', $fields);
-        $this->group->mode = $this->mode;
         $this->group->template = $this->element;
     }
 
@@ -54,10 +53,8 @@ class Template extends Base
      *
      * @throws WireException
      */
-    public function run($mode = false)
+    public function run()
     {
-        parent::run($mode);
-
         // unset name
         if(array_key_exists('name', $this->props)) {
             unset($this->props['name']);
@@ -73,6 +70,7 @@ class Template extends Base
             $this->info[] = "Template `{$this->name}` name changed with `{$this->rename}`.";
         }
 
+        $this->group->mode = $this->mode;
         $this->group->run();
         $this->element->fieldgroup = $this->group->element;
 

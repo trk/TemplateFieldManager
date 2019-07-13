@@ -25,10 +25,8 @@ class Field extends Base
      *
      * @throws WireException
      */
-    public function run($mode = false)
+    public function run()
     {
-        parent::run($mode);
-
         // unset name
         if(array_key_exists('name', $this->props)) {
             unset($this->props['name']);

@@ -25,10 +25,8 @@ class Group extends Base
      *
      * @throws WireException
      */
-    public function run($mode = false)
+    public function run()
     {
-        parent::run($mode);
-
         // unset name
         if(array_key_exists('name', $this->props)) {
             unset($this->props['name']);
@@ -59,7 +57,6 @@ class Group extends Base
         if($this->mode == Manage::MODE_UPDATE) {
             $this->element->save();
         }
-
         foreach ($context as $name => $value) {
             $field = $this->template->fieldgroup->getField($name, true);
             if($field) {

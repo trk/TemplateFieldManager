@@ -112,10 +112,8 @@ class Manage extends Wire
     /**
      * @inheritDoc
      */
-    public function run($mode = false)
+    public function run()
     {
-        $this->mode = $mode;
-
         // first create fields
         $this->runFields();
         // create templates and add fields to templates
